@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+{% for msg in messages %}
+{{ msg }}
+{% endfor %}
+
+
+<div class="container mt-5">
+        <div class="card" style="max-width: 600px; margin: auto;">
+            <div class="card-body">
+                <h2 class="card-title text-center text-danger">Confirm Deletion</h2>
+                {% if movie %}
+                    <p class="text-center">Are you sure you want to delete "<strong>{{ movie.movie_title }}</strong>"?</p>
+                    <form method="post" class="text-center">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger mr-2">Delete</button>
+                        <a href="{% url cancel_url %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+{% for msg in messages %}
+{{ msg }}
+{% endfor %}
+
+<a href="{% url cancel_url %}" class="btn btn-secondary" style="margin-left:1200px;">BACK</a>
+      <h3 class="card-title p-4" style="text-align:center;color:red"><u>MOVIES</u>
+
+      </h3>
+
+<div class="container">
+  <div class="row">
+     {% for movie in movies %}
+<div class="col-md-4 mb-4">
+        <div class="card" style="width: 100%;background-color:rgb(255, 163, 71)">
+                        <a href="{% url 'add_rating' movie.id %}" class="btn btn-secondary btn-sm">ADD RATING</a>
+
+  <img class="card-img-top" src="{{ movie.poster.url }}" alt="Card image cap" style="max-height:90%;max-width:90%;display: block; margin: 0 auto;margin-top:10px;">
+  <div class="card-body">
+    <h5 class="card-title">{{ movie.movie_title }}</h5>
+    <p class="card-text">{{ movie.description }}</p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"> Actors : {{ movie.actors }}</li>
+    <li class="list-group-item">Release Date : {{ movie.release_date}}</li>
+      <li class="list-group-item">Trailer : <a href="{{ movie.YouTube_trailer_link }}">Link</a></li>
+       <div style="margin-left:20px;margin-top:10px; width: auto;">
+    {% for rating in ratings %}
+        {% if rating.movie.id == movie.id %}
+            <div style="border: 2px solid black; margin-bottom: 10px; padding: 10px;margin-right:20px;text-align:center">
+                <p><b>Rating:</b> {{ rating.rating }} stars</p>
+                <p><b>Review:</b> {{ rating.review }}</p>
+                <a href="{% url 'delete_rating' rating.id %}" class="btn btn-danger">delete</a>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+  </ul>
+  <div class="card-body">
+         {% if movie.added_by == user or request.user.userdetails.type == 'admin' %}
+  <a href="{% url 'update_movie' movie.id %}" class="btn btn-warning" style="margin-left:20px;margin-top:-5px;">
+             <h6>Update</h6>
+                    </a>
+<a href="{% url 'delete_movie' movie.id %}" class="btn btn-danger" style="margin-left:20px;margin-top:-5px;">
+             <h6>Delete</h6>
+                    </a>
+      {% endif %}
+  </div>
+
+</div>
+
+</div>
+      {% endfor %}
+  </div>
+</div>
+
+
+
+{% endblock %}

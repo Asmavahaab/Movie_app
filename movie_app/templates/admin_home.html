@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+{% for msg in messages %}
+<small style="color:white">
+        {{ msg }}</small>
+
+{% endfor %}
+
+
+<div class="card shadow" style="width:95%;margin-left:30px;margin-top:20px;background-color:rgb(204,102,153)">
+  <div class="card-body" style="text-align:center;margin-top:20px;margin-bottom:20px;">
+      <h5 class="card-title">Hello __ {{ user.username }} __ <img src="{% static 'assets/smile-icon.webp' %}" style="width:30px;height:30px;"><br>
+          Welcome to <b style="color:yellow">Movie Sphere</b> !!!</h5>
+      <h5 class="card-title"><u>YOUR DETAILS</u></h5>
+      <p class="card-text">
+            <b>Username :</b> {{ user.username }}<br>
+          <b>Name :</b> {{ user.first_name }} {{ user.last_name }}<br>
+          <b>Mail :</b> {{ user.email }}<br>
+      <b>TYPE : ADMIN</b> </p>
+
+      <a class="btn btn-primary btn-sm" href="{% url 'update_user_password' %}" style="margin-left:10px;">UPDATE PASSWORD<img src="{% static 'assets/edit.png' %}" style="width:20px;height:20px;margin-left:10px;"></a>
+
+      <a class="btn btn-success btn-sm" href="{% url 'update_user' %}" style="margin-left:10px;">EDIT<img src="{% static 'assets/edit.png' %}" style="width:20px;height:20px;margin-left:10px;"></a>
+
+  </div>
+</div>
+
+
+
+
+      <h3 class="card-title p-4" style="text-align:center;color:red"><u>MOVIES</u><a href="{% url 'add_movie' %}" class="btn btn-success btn-sm" style="margin-left:20px;margin-top:-5px;"><small>ADD MOVIE</small></a>
+<form method="get" action="{% url 'search' %}"  style="margin-left:1000px;width:250px;display:flex;">
+    <input type="text" name="q" placeholder="Search movies here"  class="form-control">
+    <button type="submit" class="btn-sm btn-info">Search</button>
+</form>
+      </h3>
+
+<h3 style="color:white;text-align:center" class="p-3">CATEGORY <a href="{% url 'add_category' %}" class="btn btn-success btn-sm" style="margin-left:20px;"><small>ADD CATEGORY</small></a></h3>
+
+      {% for category, movies in movies_by_category.items %}
+<h4 class="card-title p-2" style="text-align:center;color:rgb(255, 118, 255);margin-bottom:20px;">
+                    <u>{{ category.name }}</u><a href="{% url 'delete_category' category.id %}" class="btn btn-danger btn-sm" style="margin-left:20px;margin-top:-5px;">
+                        <small>DELETE</small>
+                    </a></p>
+                </h4>
+
+
+
+<div class="container">
+  <div class="row">
+     {% for movie in movies %}
+<div class="col-md-4 mb-4">
+        <div class="card" style="width: 100%;background-color:rgb(255, 163, 71)">
+                        <a href="{% url 'add_rating' movie.id %}" class="btn btn-secondary btn-sm">ADD RATING</a>
+
+  <img class="card-img-top" src="{{ movie.poster.url }}" alt="Card image cap" style="max-height:90%;max-width:90%;display: block; margin: 0 auto;margin-top:10px;">
+  <div class="card-body">
+    <h5 class="card-title">{{ movie.movie_title }}</h5>
+    <p class="card-text">{{ movie.description }}</p>
+  </div>
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item"> Actors : {{ movie.actors }}</li>
+    <li class="list-group-item">Release Date : {{ movie.release_date}}</li>
+      <li class="list-group-item">Trailer : <a href="{{ movie.YouTube_trailer_link }}">Link</a></li>
+       <div style="margin-left:20px;margin-top:10px; width: auto;">
+    {% for rating in ratings %}
+        {% if rating.movie.id == movie.id %}
+            <div style="border: 2px solid black; margin-bottom: 10px; padding: 10px;margin-right:20px;text-align:center">
+                <p><b>Rating:</b> {{ rating.rating }} stars</p>
+                <p><b>Review:</b> {{ rating.review }}</p>
+                <a href="{% url 'delete_rating' rating.id %}" class="btn btn-danger">delete</a>
+            </div>
+        {% endif %}
+
+
+    {% endfor %}
+</div>
+  </ul>
+  <div class="card-body">
+  <a href="{% url 'update_movie' movie.id %}" class="btn btn-warning" style="margin-left:20px;margin-top:-5px;">
+             <h6>Update</h6>
+                    </a>
+<a href="{% url 'delete_movie' movie.id %}" class="btn btn-danger" style="margin-left:20px;margin-top:-5px;">
+             <h6>Delete</h6>
+                    </a>
+  </div>
+
+</div>
+
+</div>
+      {% empty %}
+           <p style="color:white;text-align:center;">No movies added yet</p>
+      {% endfor %}
+  </div>
+</div>
+
+{% endfor %}
+
+<h3 style="color:white" class="p-5">USERS</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Admins list styled as cards -->
+            <div class="row">
+                {% for admin in admin %}
+                    <div class="col-md-4 mb-5">
+                        <div class="card-title" style="color:white">ADMIN</div>
+                        <div class="card" style="background-color:rgb(204, 102, 153);">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ admin.user.username }} <a href="{% url 'delete_user' admin.id %}" class="btn btn-danger btn-sm" style="margin-left:30px;">
+                                    <small>DELETE</small>
+                                </a></h6>
+
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for user in users %}
+                <div class="col-md-4 mb-5">
+                        <div class="card-title" style="color:white">USER</div>
+                        <div class="card" style="background-color:rgb(204, 102, 153);">
+                            <div class="card-body">
+                                <h6 class="card-title">{{ user.user.username }}<a href="{% url 'delete_user' user.id %}" class="btn btn-danger btn-sm" style="margin-left:30px;">
+                        <small>DELETE</small>
+                    </a></h6>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+        {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
